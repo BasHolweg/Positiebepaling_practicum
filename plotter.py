@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 
 def plot_points(points, color='red', size=5):
-    fig = plt.figure()
     if np.ndim(points) > 1:
         if len(points[0]) == 3:
             ax = plt.axes(projection='3d')
@@ -21,11 +20,11 @@ def plot_points(points, color='red', size=5):
     plt.show()
 
 
-def plot_diff(points, distarray):
+def plot_diff(point, distarray):
     x, y, z = [], [], []
-    for i in range(len(points)):
-        x.append(points[i][0])
-        y.append(points[i][1])
+    for i in range(len(point)):
+        x.append(point[i][0])
+        y.append(point[i][1])
         z.append(distarray[i])
     x, y, z = np.array(x), np.array(y), np.array(z)
     fig = plt.figure()
