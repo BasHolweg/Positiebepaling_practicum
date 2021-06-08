@@ -1,6 +1,17 @@
 import numpy as np
 import plotter as p
 import geometry as g
+import trilaterate2d as tr2d
+
+
+def trilaterate2d_grid(points, a, b, c, a_d, b_d, c_d):
+    data = []
+    for i in range(len(points)):
+        if not (points[i] == a).all() or (points[i] == b).all() or (points[i] == c).all():
+            data.append(tr2d.trilaterate(a,b,c,a_d[i], b_d[i], c_d[i], variant=1))
+        else:
+            pass
+    return data
 
 
 def create_grid(x_size=10, y_size=10, z_size=None):
@@ -23,16 +34,13 @@ def array_to_point_dist(array, point):
 
 
 coordinates = create_grid(60, 40)
-b1 = np.array([10, 16])
-b2 = np.array([30, 30])
-b3 = np.array([40, 16])
+b1 = np.array([0, 0])
+b2 = np.array([30, 40])
+b3 = np.array([60, 0])
 b1_distances = array_to_point_dist(coordinates, b1)
 b2_distances = array_to_point_dist(coordinates, b2)
 b3_distances = array_to_point_dist(coordinates, b3)
-p.plot_diff(coordinates, b1_distances)
-p.plot_diff(coordinates, b2_distances)
-p.plot_diff(coordinates, b3_distances)
 
-temp = np.add(b1_distances, b2_distances)
-distances = np.add(temp, b3_distances)
-p.plot_diff(coordinates, distances)
+tri_points = trilaterate2d_grid(coordinates,b1, b2, b3, b1_distances, b2_distances, b3_distances)
+
+print(tri_points)

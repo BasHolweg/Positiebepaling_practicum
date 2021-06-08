@@ -59,7 +59,7 @@ def trilaterate(c1, c2, c3, r1, r2, r3, variant=1):
                   their average (computationally most complex but expected to be the most accurate solution).
     """
     if is_equal(c1, c2) or is_equal(c1, c3) or is_equal(c2, c3):
-        raise ValueError('All beacons should be at different locations, at least two have same location.')
+        raise ValueError('All beacons should be at different loca   tions, at least two have same location.')
 
     # check whether c1,c2,c3 are on a straight line
     if is_collinear(c1, c2, c3):

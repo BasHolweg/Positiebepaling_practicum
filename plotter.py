@@ -22,13 +22,23 @@ def plot_points(points, color='red', size=5):
 
 def plot_diff(point, distarray):
     x, y, z = [], [], []
-    for i in range(len(point)):
-        x.append(point[i][0])
-        y.append(point[i][1])
-        z.append(distarray[i])
-    x, y, z = np.array(x), np.array(y), np.array(z)
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    surf = ax.plot_trisurf(x, y, z, cmap='inferno', linewidth=0.1)
+    if len(point) > 2:
+        for i in range(len(point)):
+            x.append(point[i][0])
+            y.append(point[i][1])
+            z.append(distarray[i])
+        x, y, z = np.array(x), np.array(y), np.array(z)
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
+        surf = ax.plot_trisurf(x, y, z, cmap='inferno', linewidth=0.1)
+    else:
+        for i in range(len(point)):
+            x.append(point[0])
+            y.append(point[1])
+            z.append(distarray[i])
+        x, y, z = np.array(x), np.array(y), np.array(z)
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
+        surf = ax.plot_trisurf(x, y, z, cmap='inferno', linewidth=0.1)
     fig.colorbar(surf, shrink=0.5, aspect=5)
     plt.show()
