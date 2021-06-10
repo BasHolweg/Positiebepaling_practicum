@@ -18,7 +18,6 @@ def plot_points(points, color='red', size=5):
             ax.scatter(points[0], points[1], points[2], c=color, s=size)
         else:
             plt.scatter(points[0], points[1], c=color, s=size)
-    plt.show()
 
 
 def plot_diff(point, distarray):
@@ -42,7 +41,6 @@ def plot_diff(point, distarray):
         ax = plt.axes(projection='3d')
         surf = ax.plot_trisurf(x, y, z, cmap='inferno', linewidth=0.1)
     fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.show()
 
 
 def visualise_trilat2d(point, a, b, c, a_distances, b_distances, c_distances):
@@ -59,6 +57,4 @@ def visualise_trilat2d(point, a, b, c, a_distances, b_distances, c_distances):
     plt.gca().add_artist(draw_circle3)
 
     plot_points([a, b, c, inter_points[0], inter_points[1]])
-
-    plt.show()
 

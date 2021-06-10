@@ -128,3 +128,15 @@ def trilaterate_lstsq(c, r):
     qyx, res, rank, sv = np.linalg.lstsq(A, b, rcond=1e-10)
     # print(f'res = {res}, rank = {rank}')
     return np.array([qyx[2], qyx[1]])
+
+
+def trilaterate2d_grid(points, a, b, c, a_d, b_d, c_d):
+    data = []
+    for i in range(len(points)):
+        try:
+            point = trilaterate(a, b, c, a_d[i], b_d[i], c_d[i], variant=3)
+            data.append(point)
+        except ValueError:
+            print("No point found")
+            continue
+    return np.array(data)

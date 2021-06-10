@@ -1,102 +1,106 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import plotter as p
-import geometry as g
+from plotter import plot_diff
+from geometry import distance
+from tools import create_grid, noise, array_to_point_dist
 from trilaterate2d import trilaterate
 
+version = 2
+show_plots = True
 
-def noise(array, d=0.0):
-    for i in range(len(array)):
-        array[i] += d * np.random.random()
-    return array
+x_size, y_size = 60, 40
+coordinates = create_grid(x_size, y_size)  # Wordt alleen gebruikt bij versie 2
 
+b1 = np.array([15, 15])
+b2 = np.array([30, 35])
+b3 = np.array([45, 15])
+b12 = np.array([int(x_size/4), int(y_size/4)])
+b22 = np.array([int(x_size/2), int(2*y_size/3)])
+b32 = np.array([int(2*x_size/3), int(y_size/4)])
 
-def trilaterate2d_grid(points, a, b, c, a_d, b_d, c_d):
-    data = []
-    for i in range(len(points)):
-        try:
-            point = trilaterate(a, b, c, a_d[i], b_d[i], c_d[i], variant=3)
-            data.append(point)
-        except ValueError:
-            print("No point found")
-            continue
-    return np.array(data)
-
-
-def create_grid(x_size=10, y_size=10, z_size=None):
-    c = []
-    for x in range(x_size):
-        for y in range(y_size):
-            if z_size:
-                for z in range(z_size):
-                    c.append([x, y, z])
-            else:
-                c.append([x, y])
-    return np.array(c)
-
-
-def point_array_diff(a1, a2):
-    if len(a1) != len(a2):
-        raise ValueError("Arrays are not of the same size. Impossible to calculate")
-    else:
-        diff_array = []
-        for i in range(len(a1)):
-            diff_array.append(g.distance(a1[i], a2[i]))
-        return np.array(diff_array)
-
-
-def array_to_point_dist(array, point):
-    dist_array = []
-    for i in range(len(array)):
-        dist_array.append(g.distance(array[i], point))
-    return np.array(dist_array)
-
-
-version = 1
-printer = True
-
-coordinates = create_grid(60, 40)
-b1 = np.array([10, 20])
-b2 = np.array([30, 25])
-b3 = np.array([40, 20])
-
-x_space = np.linspace(0, 60, 10)
-y_space = np.linspace(0, 40, 10)
-ex_count = 1
-nd = 0.0001
-
+x_space = np.linspace(0, 60, 60)
+y_space = np.linspace(0, 40, 40)
+ex_count = 20
+# nd_list = np.linspace(0.01, 0.1, 10)
+nd_list = [0.01]
 
 fig, ax = plt.subplots()
-
-ax.scatter(b1[0], b1[1])
-ax.scatter(b2[0], b2[1])
-ax.scatter(b3[0], b3[1])
-
-# p.plot_points(coordinates)
-
+fig2, ax2 = plt.subplots()
 
 if version == 1:
-    for x in x_space:
-        for y in y_space:
-            point = np.array([x, y])
-            dist_array = array_to_point_dist([b1, b2, b3], point)
-            print(dist_array)
-            dist_array = noise(dist_array, nd)
-            print(dist_array)
-
-            try:
-                pre = trilaterate(b1, b2, b3, dist_array[0], dist_array[1], dist_array[2], variant=3)
-            except ValueError:
-                print("No solution found")
-                continue
-            if printer:
-                ax.scatter(pre[0], pre[1], marker='+', c='grey')
-                ax.scatter(x, y, marker='x', c='r')
+    ax.scatter(b1[0], b1[1])
+    ax.scatter(b2[0], b2[1])
+    ax.scatter(b3[0], b3[1])
+    total_diff_sum = 0
+    total_diff = []
+    for nd in nd_list:
+        diff = []
+        point_list = []
+        for x in x_space:
+            for y in y_space:
+                point = np.array([x, y])
+                point_list.append(point)
+                dist_array = array_to_point_dist([b1, b2, b3], point)
+                if len(nd_list) == 1: ax.scatter(x, y, marker='+', c='r')
+                diff_sum = 0
+                count = 0
+                for q in range(ex_count):
+                    dist_array = noise(dist_array, nd)
+                    try:
+                        pre = trilaterate(b1, b2, b3, dist_array[0], dist_array[1], dist_array[2], variant=3)
+                        diff_sum += distance(pre, point)
+                        count += 1
+                        if len(nd_list) == 1: ax.scatter(pre[0], pre[1], marker='x', c='grey')
+                    except ValueError:
+                        count -= 1
+                        # print(f"No solution found for {point}")
+                        continue
+                if count != 0:
+                    diff.append(diff_sum/count)
+                else:
+                    diff.append(nd)
+        if len(nd_list) == 1: plot_diff(point_list, diff)
+        total_diff.append(sum(diff) / len(diff))
+    if len(nd_list) > 1:
+        ax2.plot(nd_list, total_diff)
+        ax2.set_ylabel("Average error distance [m]")
+        ax2.set_xlabel("Standard deviation [m]")
 
 else:
-    for j in range(len(coordinates)):
-        point = coordinates[j]
-        dist_array = array_to_point_dist([b1, b2, b3], point)
+    ax.scatter(b12[0], b12[1])
+    ax.scatter(b22[0], b22[1])
+    ax.scatter(b32[0], b32[1])
+    total_diff_sum = 0
+    total_diff = []
+    for nd in nd_list:
+        diff = []
+        for j in range(len(coordinates)):
+            point = coordinates[j]
+            dist_array = array_to_point_dist([b12, b22, b32], point)
+            if len(nd_list) == 1: ax.scatter(point[0], point[1], marker='+', c='r')
+            diff_sum = 0
+            count = 0
+            for q in range(ex_count):
+                try:
+                    dist_array = noise(dist_array, nd)
+                    pre = trilaterate(b12, b22, b32, dist_array[0], dist_array[1], dist_array[2], variant=3)
+                    diff_sum += distance(pre, point)
+                    count += 1
+                    if len(nd_list) == 1: ax.scatter(pre[0], pre[1], marker='x', c='grey')
+                except ValueError:
+                    count -= 1
+                    # print(f"No solution found for {point}")
+                    continue
+            if count != 0:
+                diff.append(diff_sum / count)
+            else:
+                diff.append(nd)
+        if len(nd_list) == 1: plot_diff(coordinates, diff)
+        total_diff.append(sum(diff) / len(diff))
+    if len(nd_list) > 1:
+        ax2.plot(nd_list, total_diff)
+        ax2.set_ylabel("Average error distance [m]")
+        ax2.set_xlabel("Standard deviation []")
 
-if printer:
+if show_plots:
     plt.show()
