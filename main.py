@@ -14,14 +14,14 @@ from geometry import distance
 from tools import create_grid, noise, array_to_point_dist
 from trilaterate2d import trilaterate
 
-version = 2
+version = 1
 show_plots = True           # Used for debugging
-variable_deviation = False  # If True it plots the noise relation else it plots a 3d graph of the set deviation
+variable_deviation = True  # If True it plots the noise relation else it plots a 3d graph of the set deviation
 
-ex_count = 5  # Number of experements done per point
+ex_count = 20  # Number of experements done per point
 
 if variable_deviation:
-    nd_list = np.linspace(0.01, 0.1, 10)
+    nd_list = np.linspace(0.01, 0.1, 20)
 else:
     nd_list = [0.01]
 
