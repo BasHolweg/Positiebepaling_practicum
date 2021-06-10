@@ -1,9 +1,17 @@
+"""
+Plotting toolset developed for PosBep-P1 assignment
+
+Bas Holweg 10-06-2021
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import trilaterate2d as tr2d
 
 
 def plot_points(points, color='red', size=5):
+    """Plots all points in list"""
     if np.ndim(points) > 1:
         if len(points[0]) == 3:
             ax = plt.axes(projection='3d')
@@ -21,6 +29,7 @@ def plot_points(points, color='red', size=5):
 
 
 def plot_diff(point, distarray):
+    """Plots 3d graph of point coordinates in relation to the deviation"""
     x, y, z = [], [], []
     if len(point) > 2:
         for i in range(len(point)):
@@ -44,6 +53,7 @@ def plot_diff(point, distarray):
 
 
 def visualise_trilat2d(point, a, b, c, a_distances, b_distances, c_distances):
+    """Visualises trilateration method for determening point"""
     inter_points = tr2d.circle_intersect(a, b, a_distances[point], b_distances[point])
 
     print(f"Intersection points are {inter_points[0]} and {inter_points[1]}")
