@@ -1,11 +1,15 @@
 """
 Assignment PosBep-P1
 
-
+Antwoorden:
+Vraag 6: Er is duidelijk te zien dat de gemiddelde schattingsfout groter is voor punten cooliniear met twee bakens.
+En dat de gemiddelde schattingsfout groter is buiten het driehoeksgebied van de bakens. De optimale positie voor de
+bakens is dan een gelijkbenige driehoek die precies in het werkgebied past.
+Vraag 8: Uit de grafiek is af te lezen dat standaard deviatie kleiner moet zijn dan 0.02 [m].
+Vraag 9: https://www.geodirect.nl/wp-content/uploads/2021/03/S900Anew_Brochure_ENG.pdf
 
 Bas Holweg 10-06-2021
 """
-
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,13 +19,13 @@ from tools import create_grid, noise, array_to_point_dist
 from trilaterate2d import trilaterate
 
 version = 1
-show_plots = True           # Used for debugging
+show_plots = True  # Used for debugging
 variable_deviation = True  # If True it plots the noise relation else it plots a 3d graph of the set deviation
 
 ex_count = 20  # Number of experements done per point
 
 if variable_deviation:
-    nd_list = np.linspace(0.01, 0.1, 20)
+    nd_list = np.linspace(0.01, 0.1, 10)
 else:
     nd_list = [0.01]
 
@@ -35,9 +39,9 @@ b3 = np.array([45, 15])
 # Used for version 2
 x_size, y_size = 60, 40
 coordinates = create_grid(x_size, y_size)
-b12 = np.array([int(x_size/4), int(y_size/4)])
-b22 = np.array([int(x_size/2), int(2*y_size/3)])
-b32 = np.array([int(2*x_size/3), int(y_size/4)])
+b12 = np.array([int(x_size / 4), int(y_size / 4)])
+b22 = np.array([int(x_size / 2), int(2 * y_size / 3)])
+b32 = np.array([int(2 * x_size / 3), int(y_size / 4)])
 
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
@@ -58,7 +62,8 @@ if version == 1:
                 point = np.array([x, y])
                 point_list.append(point)
                 dist_array = array_to_point_dist([b1, b2, b3], point)
-                if len(nd_list) == 1: ax.scatter(x, y, marker='+', c='r')  # Only plot if there is one deviation value to prevent multiple plots showing and slowing down the program
+                if len(nd_list) == 1: ax.scatter(x, y, marker='+',c='r')  # Only plot if there is one deviation value
+                # to prevent multiple plots showing and slowing down the program
                 diff_sum = 0
                 count = 0
                 for q in range(ex_count):
@@ -69,10 +74,9 @@ if version == 1:
                         count += 1
                         if len(nd_list) == 1: ax.scatter(pre[0], pre[1], marker='x', c='grey')
                     except ValueError:
-                        count -= 1
                         continue
                 if count != 0:  # If there are points found add the average deviation to list
-                    diff.append(diff_sum/count)
+                    diff.append(diff_sum / count)
                 else:  # If no points are found assume standard deviation
                     diff.append(nd)
         if len(nd_list) == 1: plot_diff(point_list, diff)
