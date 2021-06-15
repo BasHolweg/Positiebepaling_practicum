@@ -8,7 +8,8 @@ bakens is dan een gelijkbenige driehoek die precies in het werkgebied past.
 Vraag 8: Uit de grafiek is af te lezen dat standaard deviatie kleiner moet zijn dan 0.02 [m].
 Vraag 9: https://www.geodirect.nl/wp-content/uploads/2021/03/S900Anew_Brochure_ENG.pdf
 
-Bas Holweg 10-06-2021
+Bas Holweg, Bram Nijhoff 
+10-06-2021
 """
 
 import matplotlib.pyplot as plt
