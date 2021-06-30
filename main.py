@@ -53,9 +53,9 @@ if version == 1:
     ax.scatter(b2[0], b2[1])
     ax.scatter(b3[0], b3[1])
 
-    total_diff_sum = 0
     total_diff = []
     for nd in nd_list:
+        total_diff_sum = 0
         diff = []
         point_list = []
         for x in x_space:
@@ -79,7 +79,7 @@ if version == 1:
                 if count != 0:  # If there are points found add the average deviation to list
                     diff.append(diff_sum / count)
                 else:  # If no points are found assume standard deviation
-                    diff.append(nd)
+                    diff.append(nd)  #TODO change to maximum possible distance from point with noise
         if len(nd_list) == 1: plot_diff(point_list, diff)
         total_diff.append(sum(diff) / len(diff))
     if len(nd_list) > 1:
